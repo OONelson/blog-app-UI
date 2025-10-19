@@ -9,7 +9,7 @@ import type { Blog } from "../types/blogType";
 type SortField = "date" | "title" | "author";
 type SortOrder = "asc" | "desc";
 
-const HomePage: React.FC = () => {
+const BlogsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortField, setSortField] = useState<SortField>("date");
@@ -74,7 +74,7 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           <Link
-            to="/create"
+            to="/blog/create"
             className="flex items-center px-6 py-3 bg-gradient-to-r from-[#fc8804] to-[#ffa258] text-white font-semibold rounded-xl hover:from-[#db7503] hover:to-[#fc8804] transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <Plus size={20} className="mr-2" />
@@ -188,4 +188,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default BlogsPage;
