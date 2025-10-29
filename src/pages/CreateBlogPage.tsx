@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useCreateBlog, useUpdateBlog, useBlog } from "../hooks/useBlogs";
 import type { BlogFormData } from "../types/blogType";
+import { ReusableInput } from "../components/ui/ReusableInput";
+import { ReusableButton } from "../components/ui/ReusableButton";
+import { Select, SelectItem } from "@heroui/react";
+// import { Textarea } from "@heroui/react";
 
 const CreateBlogPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -72,47 +76,42 @@ const CreateBlogPage: React.FC = () => {
   if (isLoadingBlog && isEditing) return <LoadingSpinner />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white py-8">
+    <div className="min-h-screen bg-gradient-to-b from-stone-100 to-stone-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col items-start justify-between mb-8">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-orange-600 hover:text-orange-800 transition-colors"
+            className="flex items-center text-orange-600 hover:text-orange-800 underline transition-colors"
           >
-            <ArrowLeft size={20} className="mr-2" />
+            <ArrowLeft size={20} />
             Back
           </button>
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h2 className="text-xl font-medium text-gray-800 mt-5">
             {isEditing ? "Edit Blog Post" : "Create New Blog Post"}
-          </h1>
-          <div></div>
+          </h2>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white rounded-2xl shadow-xl p-8 border border-orange-100"
+          className="bg-white rounded-2xl shadow-md py-8 px-3 border border-gray-100"
         >
-          <div className="space-y-6">
-            {/* Title */}
+          {/* Title */}
+          <div>
             <div>
-              <label
-                htmlFor="title"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Title *
+              <label className="text-sm font-medium text-gray-700 ">
+                Title
               </label>
-              <input
+              <ReusableInput
                 type="text"
-                id="title"
                 required
+                variant="faded"
+                size="md"
                 value={formData.title}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, title: e.target.value }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                placeholder="Enter an engaging title..."
               />
             </div>
 
@@ -120,20 +119,19 @@ const CreateBlogPage: React.FC = () => {
             <div>
               <label
                 htmlFor="author"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="text-sm font-medium text-gray-700 "
               >
-                Author *
+                Author
               </label>
-              <input
+              <ReusableInput
                 type="text"
-                id="author"
                 required
+                variant="faded"
+                size="md"
                 value={formData.author}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, author: e.target.value }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                placeholder="Your name"
               />
             </div>
 
@@ -141,62 +139,65 @@ const CreateBlogPage: React.FC = () => {
             <div>
               <label
                 htmlFor="category"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className=" text-sm font-medium text-gray-700 "
               >
-                Category *
+                Category
               </label>
-              <select
-                id="category"
+              <Select
                 required
+                placeholder="Select a category"
                 value={formData.category}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, category: e.target.value }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full border border-gray-200 rounded-md bg-gray-50/50 focus:outline-none transition-all text-gray-600"
               >
                 {categories.map((category) => (
-                  <option key={category} value={category}>
+                  <SelectItem
+                    key={category}
+                    className="bg-gray-50 shadow-xl text-gray-700 font-medium"
+                  >
                     {category}
-                  </option>
+                  </SelectItem>
                 ))}
-              </select>
+              </Select>
             </div>
 
             {/* Content */}
             <div>
               <label
                 htmlFor="content"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className=" text-sm font-medium text-gray-700 "
               >
-                Content *
+                Content
               </label>
+
               <textarea
-                id="content"
+                rows={3}
                 required
-                rows={12}
+                placeholder="write your story"
                 value={formData.content}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, content: e.target.value }))
                 }
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-vertical"
-                placeholder="Write your amazing story here..."
+                className="w-full text-gray-700 border border-gray-300 p-2 focus:outline-0 rounded-md transition-all "
               />
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end pt-6 border-t border-gray-200">
-              <button
+            <div className="flex justify-end pt-6 ">
+              <ReusableButton
                 type="submit"
                 disabled={isLoading}
-                className="flex items-center px-8 py-4 bg-gradient-to-r from-[#fc8804] to-[#ffa258] text-white font-semibold rounded-xl hover:from-[#db7503] hover:to-[#fc8804] transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                color="orange3"
+                size="md"
               >
-                <Save size={20} className="mr-2" />
                 {isLoading
                   ? "Saving..."
                   : isEditing
                   ? "Update Post"
                   : "Create Post"}
-              </button>
+              </ReusableButton>
             </div>
           </div>
         </form>

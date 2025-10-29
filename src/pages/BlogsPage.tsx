@@ -4,7 +4,8 @@ import { Plus, Search, Filter, SortAsc, SortDesc } from "lucide-react";
 import BlogCard from "../components/BlogCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { useBlogs, useDeleteBlog } from "../hooks/useBlogs";
-import type { Blog } from "../types/blogType";
+// import type { Blog } from "../types/blogType";
+import { sortBlogData } from "../constants/constants";
 
 type SortField = "date" | "title" | "author";
 type SortOrder = "asc" | "desc";
@@ -63,78 +64,70 @@ const BlogsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white py-8">
+    <div className=" relative min-h-screen bg-gradient-to-b from-stone-100 to-stone-50 py-6">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Blog Posts</h1>
-            <p className="text-gray-600 mt-2">
-              Discover amazing stories and share your own
-            </p>
-          </div>
-          <Link
-            to="/blog/create"
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-[#fc8804] to-[#ffa258] text-white font-semibold rounded-xl hover:from-[#db7503] hover:to-[#fc8804] transition-all duration-300 shadow-lg hover:shadow-xl"
-          >
-            <Plus size={20} className="mr-2" />
-            New Post
-          </Link>
+        <div className="flex flex-col justify-between items-center mb-8 ">
+          <h1 className="text-3xl inline-block px-3 bg-orange-400/10 rounded-2xl text-orange-600">
+            Bama Blogs{" "}
+          </h1>
+          <p className="text-gray-500 mt-2 md:w-[60%]">
+            Discover amazing stories and share your own for readers to
+            understand more about you
+          </p>
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-orange-100">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search */}
-            <div className="md:col-span-2">
-              <div className="relative">
-                <Search
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-                <input
-                  type="text"
-                  placeholder="Search blogs by title, content, or author..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
+        <section className="md:flex flex-col justify-center items-center md:w-full">
+          <div className="bg-white rounded-2xl shadow-md p-6 mb-10 border border-slate-100">
+            <section className=" flex items-center justify-between mb-2">
+              <div className="max-w-[40%] flex items-center justify-between">
+                <div className="relative ">
+                  <Filter
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    size={16}
+                  />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full pl-8 py-2 border border-gray-200/80 rounded-md focus:border-none
+                     appearance-none bg-white text-gray-600 text-sm
+                      transition-colors duration-200"
+                  >
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg
+                      className="w-4 h-4 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Category Filter */}
-            <div>
-              <div className="relative">
-                <Filter
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white"
-                >
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Sort */}
-            <div>
-              <div className="relative">
+              {/* Sort */}
+              <div className="max-w-[40%] relative">
                 {sortOrder === "asc" ? (
                   <SortAsc
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    size={16}
                   />
                 ) : (
                   <SortDesc
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    size={20}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                    size={16}
                   />
                 )}
                 <select
@@ -147,19 +140,33 @@ const BlogsPage: React.FC = () => {
                     setSortField(field);
                     setSortOrder(order);
                   }}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent appearance-none bg-white"
+                  className="w-full pl-8 pr-2 py-2 border border-gray-200 rounded-md appearance-none bg-white text-gray-600 text-sm"
                 >
-                  <option value="date-desc">Newest First</option>
-                  <option value="date-asc">Oldest First</option>
-                  <option value="title-asc">Title A-Z</option>
-                  <option value="title-desc">Title Z-A</option>
-                  <option value="author-asc">Author A-Z</option>
-                  <option value="author-desc">Author Z-A</option>
+                  {sortBlogData.map((option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      className="text-gray-600 text-sm"
+                    >
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
+            </section>
+            {/* Search */}
+            <div className="w-full flex justify-between items-center border border-gray-200 rounded-xl py-2 px-2 focus:ring-2 focus:ring-gray-300 mb-2">
+              <Search className=" text-gray-500" size={20} />
+              <input
+                type="text"
+                placeholder="Search blogs by title, content, or author..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full border-none px-2 focus:ring-0 "
+              />
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Blog Grid */}
         {filteredAndSortedBlogs?.length === 0 ? (
@@ -184,6 +191,13 @@ const BlogsPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      <Link
+        to="/blogs/create"
+        className="fixed bottom-10 right-5 z-20 transition-all duration-300 shadow-lg hover:shadow-xl p-4 rounded-full bg-orange-500/80"
+      >
+        <Plus size={20} className="text-white" />
+      </Link>
     </div>
   );
 };
